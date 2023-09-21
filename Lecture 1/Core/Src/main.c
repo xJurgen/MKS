@@ -94,14 +94,11 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  uint8_t morse[30] = {1, 0, 1, 0, 1, 0, 0,
-  	  	  	  	  1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0,
-  	  	  	  	  1, 0, 1, 0, 1,
-  	  	  	  	  0, 0, 0, 0, 0};
+  uint32_t morse = 0b101010011101110111001010100000;
   uint8_t i = 0;
   while (1)
   {
-	if (morse[i]) {
+	if ((morse >> i) & 1) {
 		LL_GPIO_SetOutputPin(LD2_GPIO_Port, LD2_Pin);
 	} else {
 		LL_GPIO_ResetOutputPin(LD2_GPIO_Port, LD2_Pin);
