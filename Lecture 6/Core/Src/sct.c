@@ -94,8 +94,8 @@ void sct_value(int16_t value, uint8_t led)
 
 	if (value < 0) {
 		reg |= 0b0000000000001000 << 16;
-		reg |= reg_values[1][value / 100 % 10];
-		reg |= reg_values[2][value / 10 % 10];
+		reg |= reg_values[1][value / 10 % 10];
+		reg |= reg_values[2][value / 1 % 10];
 
 	} else {
 		reg |= reg_values[0][value / 100 % 10];
@@ -105,8 +105,12 @@ void sct_value(int16_t value, uint8_t led)
 
 	reg |= reg_values[3][led];
 
-	if (dp >= 10) reg |= 0b0000100000000000 << 0;
-	else if (dp >= 1) reg |= 0b1000000000000000 << 16;
+	//if (value < 0) {
+	//	0b0000100000000000 << 0;
+	//} else {
+		if (dp >= 10) reg |= 0b0000100000000000 << 0;
+		else if (dp >= 1) reg |= 0b1000000000000000 << 16;
+	//}
 
 	sct_led(reg);
 }

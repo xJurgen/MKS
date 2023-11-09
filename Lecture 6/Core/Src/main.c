@@ -32,7 +32,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define CONVERT_T_DELAY		750
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -126,6 +126,8 @@ static const int16_t data[] = {1689,1669,1649,1630,1611,1593,1575,1558,1540,1524
 						  -384,-387,-389,-392,-395,-398,-401,-403,-406,-409,-411,-414,-416,
 						  -419,-422,-424,-427,-429,-431,-434};
 
+static uint32_t Tick = 0;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -178,6 +180,7 @@ int main(void)
   HAL_ADCEx_Calibration_Start(&hadc);
   HAL_ADC_Start(&hadc);
 
+  Tick = HAL_GetTick();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -187,6 +190,10 @@ int main(void)
 
   while (1)
   {
+
+	static uint32_t oldTick = 0;
+	static uint8_t converting = 0;
+
 	if (!HAL_GPIO_ReadPin(S2_GPIO_Port, S2_Pin)) { // If left button has been pressed...
 		HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, 1); // Light up the left led...
 		HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, 0); // Turn off the right led...
@@ -197,17 +204,26 @@ int main(void)
 		state = 0; // Set state to DS18b20
 	}
 
-	if (state) { // Read if NTC...
+	if (state && (Tick >= oldTick + CONVERT_T_DELAY)) { // Read if NTC...
+		oldTick = Tick;
 		int16_t temp = data[HAL_ADC_GetValue(&hadc)]*10;
 		sct_value(temp, 0);
 	} else { // Read if DS18b20
-		OWConvertAll();
-		HAL_Delay(CONVERT_T_DELAY);
-		int16_t temp;
-		if (OWReadTemperature(&temp)) sct_value(temp, 0);
-		else sct_value(000, 0);
+		if (!converting) {
+			OWConvertAll();
+			converting = 1;
+		}
+		if (Tick >= oldTick + CONVERT_T_DELAY) {
+			converting = 0;
+			oldTick = Tick;
+
+			int16_t temp;
+			if (OWReadTemperature(&temp)) sct_value(temp, 0);
+			else sct_value(000, 0);
+		}
 	}
 
+	Tick = HAL_GetTick();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
