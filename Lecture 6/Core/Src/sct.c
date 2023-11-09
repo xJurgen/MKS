@@ -85,17 +85,20 @@ static const uint32_t reg_values[4][10] = {
 	},
 };
 
-void sct_value(int16_t value, uint8_t led)
+// if pointIndex == 100 -> set point after first digit from left (1.00)
+// if pointInted == 10 -> set point after second digit from left (10.0)
+void sct_value(int16_t value, uint8_t led, uint8_t pointIndex)
 {
 	uint32_t reg = 0;
-	value += 5;
-	value /= 10;
-	int8_t dp = value / 10;
+	value += 5; // Rounding..
+	value /= 10; // The value on ADC needs to be divided by 10 as mentioned in the assignment document.
+
+	value *= -1;
 
 	if (value < 0) {
 		reg |= 0b0000000000001000 << 16;
-		reg |= reg_values[1][value / 10 % 10];
-		reg |= reg_values[2][value / 1 % 10];
+		reg |= reg_values[1][(value * -1) / 100 % 10];
+		reg |= reg_values[2][(value * -1) / 10 % 10];
 
 	} else {
 		reg |= reg_values[0][value / 100 % 10];
@@ -105,12 +108,10 @@ void sct_value(int16_t value, uint8_t led)
 
 	reg |= reg_values[3][led];
 
-	//if (value < 0) {
-	//	0b0000100000000000 << 0;
-	//} else {
-		if (dp >= 10) reg |= 0b0000100000000000 << 0;
-		else if (dp >= 1) reg |= 0b1000000000000000 << 16;
-	//}
+	if (value >= 0) {
+		if (pointIndex == 10) reg |= 0b0000100000000000 << 0;
+		else if (pointIndex >= 100) reg |= 0b1000000000000000 << 16;
+	}
 
 	sct_led(reg);
 }
