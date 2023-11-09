@@ -12,7 +12,7 @@
 
 void sct_led(uint32_t value);
 
-void sct_value(int16_t value, uint8_t led);
+void sct_value(int16_t value, uint8_t led, uint8_t pointIndex);
 
 void sct_init(void);
 
