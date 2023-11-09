@@ -207,7 +207,7 @@ int main(void)
 	if (state && (Tick >= oldTick + CONVERT_T_DELAY)) { // Read if NTC...
 		oldTick = Tick;
 		int16_t temp = data[HAL_ADC_GetValue(&hadc)]*10;
-		sct_value(temp, 0);
+		sct_value(temp, 0, 10);
 	} else { // Read if DS18b20
 		if (!converting) {
 			OWConvertAll();
@@ -218,8 +218,8 @@ int main(void)
 			oldTick = Tick;
 
 			int16_t temp;
-			if (OWReadTemperature(&temp)) sct_value(temp, 0);
-			else sct_value(000, 0);
+			if (OWReadTemperature(&temp)) sct_value(temp, 0, 10);
+			else sct_value(000, 0, 0);
 		}
 	}
 
