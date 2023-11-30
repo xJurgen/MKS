@@ -1,0 +1,12 @@
+"Task Aware Debugger for GDB" version 11.6.0 (202206271353)
+(c) 2016-2022 NXP Semiconductors, Inc.
+==================================
+16:02:48.606 INFO: [ZephyrRTOS] C:\Users\xvever12\Desktop\MKS\MKS\Lecture 8 - NXP\lpcxpresso55s69_hello_world\Debug\.config file could not be read
+16:02:48.606 INFO: [TadModel] DSF session ID 48 has started.
+16:02:55.195 INFO: [TadState] TAD state changed: DEBUG_STARTED -> DEBUG_INIT_0 (SUSPENDED, USER_REQUEST)
+16:02:55.282 INFO: [TadState] TAD state changed: DEBUG_INIT_0 -> DEBUG_INIT_1 (SUSPENDED, USER_REQUEST)
+16:02:56.262 INFO: [TadState] TAD state changed: DEBUG_INIT_1 -> DEBUG_SUSPENDED (RESUMED, USER_REQUEST)
+16:02:56.317 INFO: [TadState] TAD state changed: DEBUG_SUSPENDED -> DEBUG_SUSPENDED (SUSPENDED, BREAKPOINT)
+16:03:03.198 INFO: [TadState] TAD state changed: DEBUG_SUSPENDED -> DEBUG_RESUMED (RESUMED, USER_REQUEST)
+16:03:56.480 INFO: [TadState] TAD state changed: DEBUG_RESUMED -> READY (SUSPENDED, SIGNAL)
+16:03:56.986 INFO: [TadModel] DSF session ID 48 has ended.
