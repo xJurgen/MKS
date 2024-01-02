@@ -27,9 +27,9 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 typedef enum {
-	START_WATCH,
-	STOP_WATCH,
-	RESET_WATCH
+	WAIT_FOR_START,
+	WAIT_FOR_STOP,
+	WAIT_FOR_RESET
 } WATCH_STATUS;
 
 typedef enum {
@@ -107,24 +107,24 @@ int main(void)
   while (1)
   {
 	static uint8_t display_status = DISPLAY_ON;
-	static uint8_t watch_status = START_WATCH;
+	static uint8_t watch_status = WAIT_FOR_START;
 	static uint32_t time = 0;
 
 	if (HAL_GPIO_ReadPin(S2_GPIO_Port, S2_Pin) == 0) { //If S2 has been pressed
 		//Start-Stop-Reset on each press of the button
 
 		//By every press the next state is set
-		if (watch_status == START_WATCH) {
+		if (watch_status == WAIT_FOR_START) {
 			time = HAL_GetTick(); // Start counting by initializing time value to non-zero systick
-			watch_status = STOP_WATCH; // set next state to stop
+			watch_status = WAIT_FOR_STOP; // set next state to stop
 
-		} else if (watch_status == STOP_WATCH) {
-			watch_status = RESET_WATCH; // set next state to reset
+		} else if (watch_status == WAIT_FOR_STOP) {
+			watch_status = WAIT_FOR_RESET; // set next state to reset
 
-		} else if (watch_status == RESET_WATCH) {
+		} else if (watch_status == WAIT_FOR_RESET) {
 			time = 0;
 			sct_value(time, 0); // show zeroes on display
-			watch_status = START_WATCH; // set next state to start
+			watch_status = WAIT_FOR_START; // set next state to start
 		}
 	} else if (HAL_GPIO_ReadPin(S1_GPIO_Port, S1_Pin) == 0) {//If S1 has been pressed
 		//Turn on-off the display
@@ -139,7 +139,7 @@ int main(void)
 
 	// If the watch started (thus systick saved in time is not zero), compute time
 	// this might be a little bit confusing because of how the automata before was designed
-	if (time != 0 && watch_status == STOP_WATCH) time = HAL_GetTick() - time;
+	if (time != 0 && watch_status == WAIT_FOR_STOP) time = HAL_GetTick() - time;
 
 	// If display is on, show time
 	if (display_status == DISPLAY_ON) {
